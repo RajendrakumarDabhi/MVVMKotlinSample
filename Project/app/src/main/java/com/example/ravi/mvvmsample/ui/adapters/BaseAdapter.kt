@@ -12,7 +12,7 @@ import com.example.ravi.mvvmsample.models.User
 import kotlinx.android.synthetic.main.item_user.view.*
 
 abstract class AbstractAdapter<ITEM> constructor(
-    protected var itemList: List<ITEM>,
+    protected var itemList: MutableList<ITEM>,
     private val layoutResId: Int)
     : RecyclerView.Adapter<AbstractAdapter.Holder>() {
 
@@ -22,12 +22,12 @@ abstract class AbstractAdapter<ITEM> constructor(
         val view =  LayoutInflater.from(parent.context).inflate(layoutResId, parent, false)
         val viewHolder = Holder(view)
         val itemView = viewHolder.itemView
-        itemView.setOnClickListener {
+        /*itemView.setOnClickListener {
             val adapterPosition = viewHolder.adapterPosition
             if (adapterPosition != RecyclerView.NO_POSITION) {
                 onItemClick(itemView, adapterPosition)
             }
-        }
+        }*/
         return viewHolder
     }
     protected open fun onItemClick(itemView: View, position: Int) {
@@ -42,20 +42,26 @@ abstract class AbstractAdapter<ITEM> constructor(
 
     }
 
+    fun setData(listData:List<ITEM>)
+    {
+        itemList.clear()
+        itemList.addAll(listData)
+        notifyDataSetChanged()
+    }
     class Holder(itemView: View) : RecyclerView.ViewHolder(itemView)
 
  //   abstract fun onItemClick(itemView: View, position: Int)
 }
 
 
-class Kadapter<ITEM>(items: List<ITEM>,
+class Kadapter<ITEM>(items: MutableList<ITEM>,
                      layoutResId: Int,
                      private val bindHolder: View.(ITEM) -> Unit)
     : AbstractAdapter<ITEM>(items, layoutResId) {
 
     private var itemClick: ITEM.() -> Unit = {}
 
-    constructor(items: List<ITEM>,
+    constructor(items: MutableList<ITEM>,
                 layoutResId: Int,
                 bindHolder: View.(ITEM) -> Unit,
                 itemClick: ITEM.() -> Unit = {}) : this(items, layoutResId, bindHolder) {

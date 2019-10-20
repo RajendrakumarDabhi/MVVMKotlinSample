@@ -22,7 +22,7 @@ fun ImageView.LoadCircleImage(img:ImageView,filePath:String,placeHolder:Int=R.dr
         .into(img)
 
 }
-fun <ITEM> RecyclerView.setUp(items: List<ITEM>,
+fun <ITEM> RecyclerView.setUp(items: MutableList<ITEM>,
                               layoutResId: Int,
                               bindHolder: View.(ITEM) -> Unit,
                               itemClick: ITEM.() -> Unit = {},
