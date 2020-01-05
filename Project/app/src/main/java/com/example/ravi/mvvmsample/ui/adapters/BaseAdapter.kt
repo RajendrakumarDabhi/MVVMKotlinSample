@@ -50,7 +50,7 @@ abstract class AbstractAdapter<ITEM> constructor(
     }
     class Holder(itemView: View) : RecyclerView.ViewHolder(itemView)
 
- //   abstract fun onItemClick(itemView: View, position: Int)
+
 }
 
 
@@ -75,5 +75,7 @@ class Kadapter<ITEM>(items: MutableList<ITEM>,
     override fun onItemClick(itemView: View, position: Int) {
         itemList[position].itemClick()
     }
+
+
 }
 

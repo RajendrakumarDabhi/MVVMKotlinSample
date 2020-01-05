@@ -1,15 +1,22 @@
 package com.example.ravi.mvvmsample.ui.views
 
+import android.graphics.Color
+import android.opengl.Visibility
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.Toast
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.ravi.mvvmsample.R
+import com.example.ravi.mvvmsample.api.Response.ListUsersResponse
+import com.example.ravi.mvvmsample.api.Response.ResponseStatus
 import com.example.ravi.mvvmsample.helpers.LoadCircleImage
 import com.example.ravi.mvvmsample.helpers.setUp
 import com.example.ravi.mvvmsample.helpers.showToast
@@ -26,7 +33,7 @@ class MainActivity : AppCompatActivity() {
     lateinit var mViewModel: MainViewModel
     val mUserList: MutableList<User> = ArrayList()
     lateinit var mAdapter: Kadapter<User>
-
+    val titleMenuItem = "Load via Room Db"
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -60,10 +67,47 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun observeEventViewmodel() {
-        mViewModel.getListUsers().observe(this, Observer {
-              mAdapter.setData(it)
+        mViewModel.getListUsersLiveData().observe(this, Observer {
+            if (it.status == ResponseStatus.STATUS_LOADING) {
+
+                if (it.data == true) {
+                    progressBar.visibility = View.VISIBLE
+                } else {
+                    progressBar.visibility = View.GONE
+
+                }
+
+            } else if (it.status == ResponseStatus.STATUS_ERROR) {
+                progressBar.visibility = View.GONE
+                rv_users.setBackgroundResource(R.drawable.error)
+            } else {
+                progressBar.visibility = View.GONE
+                val users = it.data as ListUsersResponse
+                users.data?.let { it1 -> mAdapter.setData(it1) }
+            }
         })
 
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+
+        menu?.add(titleMenuItem)
+        return super.onCreateOptionsMenu(menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.title.equals(titleMenuItem)) {
+            mUserList.clear()
+            mAdapter.notifyDataSetChanged()
+            mViewModel.getandSaveListUsers()
+            mViewModel.getListUsers().observe(this, Observer {
+                mUserList.clear()
+                mUserList.addAll(it)
+                rv_users.setBackgroundColor(Color.WHITE)
+                mAdapter.notifyDataSetChanged()
+            })
+        }
+        return super.onOptionsItemSelected(item)
     }
 
 
