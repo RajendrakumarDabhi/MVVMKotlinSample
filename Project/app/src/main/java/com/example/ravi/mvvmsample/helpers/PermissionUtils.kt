@@ -5,8 +5,7 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.preference.PreferenceManager;
-import android.provider.Settings;
-import androidx.fragment.app.Fragment
+import android.provider.Settings
 
 
   object PermissionUtils {
@@ -28,7 +27,7 @@ import androidx.fragment.app.Fragment
         }
     }
 
-    fun requestPermissions(fragment: Fragment,  permission:Array<String>, requestCode:Int) {
+    fun requestPermissions(fragment: androidx.fragment.app.Fragment, permission:Array<String>, requestCode:Int) {
         if (useRunTimePermissions()) {
             fragment.requestPermissions(permission, requestCode);
         }
